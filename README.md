@@ -1,0 +1,1 @@
+Attempting to create Python files with data / Vecs from Rust and executing the newly generated python files from rust Command::new
