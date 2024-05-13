@@ -1,19 +1,22 @@
-use std::fs::File;
-use std::io::prelude::*;
+//use std::fs::File;
+//use std::io::prelude::*;
 //use std::io::{BufRead, BufReader};
 use std::process::{Command/*, Stdio*/};
 
 fn call_matplotlib_simple(data: Vec<f64>) {
   let python_str = format!("import matplotlib.pyplot as plt\nif __name__ == \"__main__\":\n\tdata = {:?}\n\tprint(\"\\n(main.py) data: Vec<f64> from src/main.rs =\")\n\tprint(data)\n\tplt.plot(data)\n\tplt.xlabel(\"Index\")\n\tplt.ylabel(\"Value\")\n\tplt.ylabel(\"Simple Plot\")\n\tplt.show()", data);
-  let mut file = File::create("src/main.py").expect("(main.rs) :: call_matplotlib() Unable to write python_str to src/main.py");
-  file.write_all(python_str.as_bytes()).expect("(main.rs) :: call_matplotlib() Unable to write python_str to src/main.py");
-  if std::env::consts::OS == "windows" {
-    let pycmd = Command::new("python").arg("src/main.py").output().expect("(main.rs) :: call_matplotlib() Failed to execute src/main.py");
-    println!("(main.rs) :: call_matplotlib() Output from src/main.py ~~~\n{}\n~~~", String::from_utf8_lossy(&pycmd.stdout));
+  //let mut file = File::create("src/main.py").expect("(main.rs) :: call_matplotlib() Unable to write python_str to src/main.py");
+  //file.write_all(python_str.as_bytes()).expect("(main.rs) :: call_matplotlib() Unable to write python_str to src/main.py");
+  let pycmd = if std::env::consts::OS == "windows" {
+    Command::new("python")
   } else {
-    let pycmd = Command::new("python3").arg("src/main.py").output().expect("(main.rs) :: call_matplotlib() Failed to execute src/main.py");
-    println!("(main.rs) :: call_matplotlib() Output from src/main.py ~~~\n{}\n~~~", String::from_utf8_lossy(&pycmd.stdout));
+    Command::new("python3")
   }
+  .arg("-c")
+  .arg(&python_str)
+  .output()
+  .expect("(main.rs) :: call_matplotlib() Failed to execute src/main.py");
+  println!("(main.rs) :: call_matplotlib() Output from src/main.py ~~~\n{}\n~~~", String::from_utf8_lossy(&pycmd.stdout));
 }
 
 /*fn open_python_cli() {
