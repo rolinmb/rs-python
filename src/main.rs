@@ -3,8 +3,11 @@
 //use std::io::{BufRead, BufReader};
 use std::process::{Command/*, Stdio*/};
 
-fn call_matplotlib_simple(data: Vec<f64>) {
-  let python_str = format!("import matplotlib.pyplot as plt\nif __name__ == \"__main__\":\n\tdata = {:?}\n\tprint(\"\\n(main.py) data: Vec<f64> from src/main.rs =\")\n\tprint(data)\n\tplt.plot(data)\n\tplt.xlabel(\"Index\")\n\tplt.ylabel(\"Value\")\n\tplt.ylabel(\"Simple Plot\")\n\tplt.show()", data);
+fn call_matplotlib_simple(data: Vec<f64>, title: String, xlabel: String, ylabel: String) {
+  let python_str = format!(
+    "import matplotlib.pyplot as plt\nif __name__ == \"__main__\":\n\tdata = {:?}\n\tprint(\"\\n(main.py) data: Vec<f64> from src/main.rs =\")\n\tprint(data)\n\tplt.plot(data)\n\tplt.title(\"{}\")\n\tplt.xlabel(\"{}\")\n\tplt.ylabel(\"{}\")\n\tplt.show()",
+    data, title, xlabel, ylabel,
+  );
   //let mut file = File::create("src/main.py").expect("(main.rs) :: call_matplotlib() Unable to write python_str to src/main.py");
   //file.write_all(python_str.as_bytes()).expect("(main.rs) :: call_matplotlib() Unable to write python_str to src/main.py");
   let pycmd = if std::env::consts::OS == "windows" {
@@ -33,6 +36,6 @@ fn call_matplotlib_simple(data: Vec<f64>) {
 fn main() {
   let data: Vec<f64> = vec![1.0, 2.0, 3.0, 4.0, 5.0];
   println!("(main.rs) :: main() data: Vec<f64> = {:?}\n", data);
-  call_matplotlib_simple(data);
+  call_matplotlib_simple(data, "Matplotlib rs-python Test".to_string(), "Index".to_string(), "Value".to_string());
   //open_python_cli();
 }
